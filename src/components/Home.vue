@@ -21,6 +21,7 @@
           :collapse="isCollapse"
           :collapse-transition="false"
           router
+          :default-active="activePath"
         >
           <!-- 一级菜单 -->
           <el-submenu
@@ -41,6 +42,7 @@
               :index="'/' + subItem.path"
               v-for="subItem in item.children"
               :key="subItem.id"
+              @click="saveNavState('/' + subItem.path)"
             >
               <!-- 一级菜单模板区域 -->
               <template slot="title">
@@ -79,15 +81,18 @@ export default {
         145: 'el-icon-s-marketing'
       },
       // 是否折叠侧边栏
-      isCollapse: false
+      isCollapse: false,
+      // 被激活的链接地址
+      activePath: ''
     }
   },
   computed: {},
   watch: {},
-  created () {},
-  mounted () {
-    this.getMenus()
+  created () {
+    this.getMenusList()
+    this.activePath = window.sessionStorage.getItem('activePath')
   },
+  mounted () {},
   methods: {
     // 退出登录
     logout () {
@@ -105,15 +110,23 @@ export default {
           this.$message.info('暂不退出')
         })
     },
+
     // 左侧菜单数据
-    async getMenus () {
+    async getMenusList () {
       const { data: res } = await this.$http.get('menus')
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menusList = res.data
       console.log(res.data)
     },
+
     toggleCollapse () {
       this.isCollapse = !this.isCollapse
+    },
+
+    // 保存链接的激活状态
+    saveNavState (activePath) {
+      window.sessionStorage.setItem('activePath', activePath)
+      this.activePath = activePath
     }
   }
 }
