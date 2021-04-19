@@ -1,5 +1,5 @@
 <template>
-  <div>权限列表</div>
+  <div>商品分类</div>
 </template>
 
 <script>

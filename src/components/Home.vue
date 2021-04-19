@@ -12,7 +12,10 @@
       <!-- 侧边栏 -->
       <el-aside :width="isCollapse ? '64px' : '200px'">
         <!-- 侧边栏菜单区域 -->
-        <div class="toggle_button" @click="toggleCollapse">|||</div>
+        <div class="toggle_button" @click="toggleCollapse">
+          <i class="el-icon-arrow-left" v-if="!isCollapse"></i>
+          <i class="el-icon-arrow-right" v-else></i>
+        </div>
         <el-menu
           background-color="#313743"
           text-color="#fff"
@@ -114,9 +117,12 @@ export default {
     // 左侧菜单数据
     async getMenusList () {
       const { data: res } = await this.$http.get('menus')
+      console.log(res)
+      if (res.meta.status === 400) {
+        return this.$router.push('/login')
+      }
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menusList = res.data
-      console.log(res.data)
     },
 
     toggleCollapse () {
@@ -168,7 +174,7 @@ export default {
   line-height: 24px;
   font-size: 10px;
   text-align: center;
-  letter-spacing: 0.2em;
+  // letter-spacing: 0.2em;
   cursor: pointer;
 }
 </style>
